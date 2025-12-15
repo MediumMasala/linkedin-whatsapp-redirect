@@ -27,8 +27,8 @@
 
         <p class="instruction">When this pops up, tap <strong>Retry</strong>.</p>
 
-        <!-- Screenshot with animated overlays - clickable -->
-        <a href="#" id="screenshotLink" class="screenshot-container">
+        <!-- Screenshot with animated overlays -->
+        <div class="screenshot-container">
             <img src="Screenshot.jpeg" alt="Tap Retry when you see this popup" class="screenshot-img">
 
             <!-- Scan line animation -->
@@ -43,7 +43,7 @@
                     <path d="M13.75 2.5a1.25 1.25 0 0 0-2.5 0v8.25H9.75a1.25 1.25 0 0 0 0 2.5h1.5v1h-1.5a1.25 1.25 0 0 0 0 2.5h1.5v2.5a1.25 1.25 0 0 0 2.5 0v-2.5h1.5a1.25 1.25 0 0 0 0-2.5h-1.5v-1h1.5a1.25 1.25 0 0 0 0-2.5h-1.5V2.5z"/>
                 </svg>
             </div>
-        </a>
+        </div>
 
         <p class="motivation">You're one step closer to your dreams.</p>
 
@@ -83,26 +83,20 @@
             const isLinkedIn = isLinkedInBrowser();
             const isAndroidDevice = isAndroid();
             const whatsappBtn = document.getElementById('whatsappBtn');
-            const screenshotLink = document.getElementById('screenshotLink');
 
-            var targetUrl;
             if (isLinkedIn && isAndroidDevice) {
                 // LinkedIn Android: Use Intent URL
-                targetUrl = whatsappIntent;
+                whatsappBtn.href = whatsappIntent;
                 console.log('LinkedIn Android detected - using Intent URL');
             } else if (isAndroidDevice) {
                 // Regular Android: Try Intent URL directly
-                targetUrl = whatsappIntent;
+                whatsappBtn.href = whatsappIntent;
                 console.log('Android detected - using Intent URL');
             } else {
                 // iOS/Desktop: Use standard wa.me URL
-                targetUrl = whatsappUrl;
+                whatsappBtn.href = whatsappUrl;
                 console.log('iOS/Desktop detected - using wa.me URL');
             }
-
-            // Set href on both button and screenshot
-            whatsappBtn.href = targetUrl;
-            screenshotLink.href = targetUrl;
 
             console.log('Page loaded. User Agent:', navigator.userAgent);
             console.log('LinkedIn Browser:', isLinkedIn);
