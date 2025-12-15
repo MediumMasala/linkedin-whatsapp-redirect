@@ -48,15 +48,60 @@
         <p class="motivation">You're one step closer to your dreams.</p>
 
         <a
-            href="intent://wa.me/919224262682?text=Hi%20I%20want%20to%20know%20more%20about%20grapevine/home#Intent;scheme=https;package=com.android.chrome;end;"
+            href="#"
             class="btn-primary"
-            id="indexOpenBtn"
+            id="whatsappBtn"
             aria-label="Open WhatsApp to chat with Tal"
         >
             Open WhatsApp
         </a>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        // Configuration
+        const WHATSAPP_NUMBER = '919224262682';
+        const WHATSAPP_MESSAGE = 'Hi I want to know more about grapevine';
+
+        // Build WhatsApp URLs
+        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+        const whatsappDeepLink = `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+        const whatsappIntent = `intent://send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(WHATSAPP_MESSAGE)}#Intent;scheme=whatsapp;package=com.whatsapp;S.browser_fallback_url=${encodeURIComponent(whatsappUrl)};end`;
+
+        // Detect LinkedIn in-app browser
+        function isLinkedInBrowser() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            return ua.includes('LinkedIn') || ua.includes('LinkedInApp');
+        }
+
+        // Detect Android
+        function isAndroid() {
+            return /android/i.test(navigator.userAgent);
+        }
+
+        // Set the href dynamically on page load based on device/browser
+        window.addEventListener('load', function() {
+            const isLinkedIn = isLinkedInBrowser();
+            const isAndroidDevice = isAndroid();
+            const whatsappBtn = document.getElementById('whatsappBtn');
+
+            if (isLinkedIn && isAndroidDevice) {
+                // LinkedIn Android: Use Intent URL
+                whatsappBtn.href = whatsappIntent;
+                console.log('LinkedIn Android detected - using Intent URL');
+            } else if (isAndroidDevice) {
+                // Regular Android: Try Intent URL directly
+                whatsappBtn.href = whatsappIntent;
+                console.log('Android detected - using Intent URL');
+            } else {
+                // iOS/Desktop: Use standard wa.me URL
+                whatsappBtn.href = whatsappUrl;
+                console.log('iOS/Desktop detected - using wa.me URL');
+            }
+
+            console.log('Page loaded. User Agent:', navigator.userAgent);
+            console.log('LinkedIn Browser:', isLinkedIn);
+            console.log('Android:', isAndroidDevice);
+        });
+    </script>
 </body>
 </html>
