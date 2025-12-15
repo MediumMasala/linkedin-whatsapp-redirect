@@ -113,7 +113,7 @@ h1 {
    ============================================ */
 .screenshot-container {
     position: relative;
-    margin: 0 auto;
+    margin: 0 auto 24px;
     max-width: 280px;
     border-radius: 12px;
     overflow: hidden;
