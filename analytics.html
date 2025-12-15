@@ -134,45 +134,116 @@
     <script>
         const ANALYTICS_URL = 'https://script.google.com/macros/s/AKfycbyF7j_JBJiv6j60xhi_sewpDaqRHbUZEfWXwBT5V3oCOMvSbxouQMo_MYiYgs5QIwPKtw/exec';
 
-        async function loadStats() {
+        function displayStats(data) {
             const content = document.getElementById('content');
             const lastUpdated = document.getElementById('lastUpdated');
 
+            content.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value views">${data.pageViews}</div>
+                        <div class="stat-label">Page Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value clicks">${data.clicks}</div>
+                        <div class="stat-label">WhatsApp Clicks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value rate">${data.conversionRate}</div>
+                        <div class="stat-label">Conversion Rate</div>
+                    </div>
+                </div>
+            `;
+
+            lastUpdated.textContent = 'Last updated: ' + new Date().toLocaleString();
+        }
+
+        function displayError(message) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="error">
+                    Failed to load analytics. Make sure the Google Apps Script is deployed correctly.
+                    <br><br>
+                    Error: ${message}
+                </div>
+            `;
+        }
+
+        function loadStats() {
+            const content = document.getElementById('content');
             content.innerHTML = '<div class="loading">Loading analytics...</div>';
 
-            try {
-                const response = await fetch(ANALYTICS_URL);
-                const data = await response.json();
+            // Remove any existing script
+            const existingScript = document.getElementById('analyticsScript');
+            if (existingScript) existingScript.remove();
 
-                content.innerHTML = `
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value views">${data.pageViews}</div>
-                            <div class="stat-label">Page Views</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value clicks">${data.clicks}</div>
-                            <div class="stat-label">WhatsApp Clicks</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value rate">${data.conversionRate}</div>
-                            <div class="stat-label">Conversion Rate</div>
-                        </div>
-                    </div>
-                `;
+            // Use script tag to bypass CORS (Google Apps Script redirects)
+            const script = document.createElement('script');
+            script.id = 'analyticsScript';
+            script.src = ANALYTICS_URL + '?callback=handleAnalyticsResponse&t=' + Date.now();
+            script.onerror = function() {
+                // Fallback: try iframe approach
+                loadStatsViaIframe();
+            };
+            document.body.appendChild(script);
 
-                lastUpdated.textContent = 'Last updated: ' + new Date().toLocaleString();
-
-            } catch (error) {
-                content.innerHTML = `
-                    <div class="error">
-                        Failed to load analytics. Make sure the Google Apps Script is deployed correctly.
-                        <br><br>
-                        Error: ${error.message}
-                    </div>
-                `;
-            }
+            // Timeout fallback
+            setTimeout(function() {
+                if (content.innerHTML.includes('Loading')) {
+                    loadStatsViaIframe();
+                }
+            }, 3000);
         }
+
+        function loadStatsViaIframe() {
+            const content = document.getElementById('content');
+
+            // Create hidden iframe to fetch data
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = ANALYTICS_URL;
+
+            iframe.onload = function() {
+                try {
+                    // Try to get content from iframe
+                    const iframeContent = iframe.contentDocument || iframe.contentWindow.document;
+                    const text = iframeContent.body.innerText;
+                    const data = JSON.parse(text);
+                    displayStats(data);
+                } catch (e) {
+                    // If iframe approach fails, show manual check option
+                    content.innerHTML = `
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value views">-</div>
+                                <div class="stat-label">Page Views</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value clicks">-</div>
+                                <div class="stat-label">WhatsApp Clicks</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value rate">-</div>
+                                <div class="stat-label">Conversion Rate</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 20px; color: #888;">
+                            Can't load stats directly due to browser restrictions.<br>
+                            <a href="${ANALYTICS_URL}" target="_blank" style="color: #4facfe;">Click here to view raw data</a>
+                            or check your Google Sheet directly.
+                        </p>
+                    `;
+                }
+                iframe.remove();
+            };
+
+            document.body.appendChild(iframe);
+        }
+
+        // Global callback for JSONP-style response
+        window.handleAnalyticsResponse = function(data) {
+            displayStats(data);
+        };
 
         // Load stats on page load
         loadStats();
