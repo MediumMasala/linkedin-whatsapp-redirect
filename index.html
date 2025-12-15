@@ -27,23 +27,25 @@
 
         <p class="instruction">When this pops up, tap <strong>Retry</strong>.</p>
 
-        <!-- Screenshot with animated overlays -->
-        <div class="screenshot-container">
-            <img src="Screenshot.jpeg" alt="Tap Retry when you see this popup" class="screenshot-img">
+        <!-- Screenshot with animated overlays - wrapped in link -->
+        <a href="#" id="screenshotLink">
+            <div class="screenshot-container">
+                <img src="Screenshot.jpeg" alt="Tap Retry when you see this popup" class="screenshot-img">
 
-            <!-- Scan line animation -->
-            <div class="scan-line"></div>
+                <!-- Scan line animation -->
+                <div class="scan-line"></div>
 
-            <!-- Pulsing highlight around Retry button area -->
-            <div class="retry-highlight"></div>
+                <!-- Pulsing highlight around Retry button area -->
+                <div class="retry-highlight"></div>
 
-            <!-- Animated cursor/hand -->
-            <div class="tap-cursor">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
-                    <path d="M13.75 2.5a1.25 1.25 0 0 0-2.5 0v8.25H9.75a1.25 1.25 0 0 0 0 2.5h1.5v1h-1.5a1.25 1.25 0 0 0 0 2.5h1.5v2.5a1.25 1.25 0 0 0 2.5 0v-2.5h1.5a1.25 1.25 0 0 0 0-2.5h-1.5v-1h1.5a1.25 1.25 0 0 0 0-2.5h-1.5V2.5z"/>
-                </svg>
+                <!-- Animated cursor/hand -->
+                <div class="tap-cursor">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+                        <path d="M13.75 2.5a1.25 1.25 0 0 0-2.5 0v8.25H9.75a1.25 1.25 0 0 0 0 2.5h1.5v1h-1.5a1.25 1.25 0 0 0 0 2.5h1.5v2.5a1.25 1.25 0 0 0 2.5 0v-2.5h1.5a1.25 1.25 0 0 0 0-2.5h-1.5v-1h1.5a1.25 1.25 0 0 0 0-2.5h-1.5V2.5z"/>
+                    </svg>
+                </div>
             </div>
-        </div>
+        </a>
 
         <p class="motivation">You're one step closer to your dreams.</p>
 
@@ -83,20 +85,26 @@
             const isLinkedIn = isLinkedInBrowser();
             const isAndroidDevice = isAndroid();
             const whatsappBtn = document.getElementById('whatsappBtn');
+            const screenshotLink = document.getElementById('screenshotLink');
 
+            var targetUrl;
             if (isLinkedIn && isAndroidDevice) {
                 // LinkedIn Android: Use Intent URL
-                whatsappBtn.href = whatsappIntent;
+                targetUrl = whatsappIntent;
                 console.log('LinkedIn Android detected - using Intent URL');
             } else if (isAndroidDevice) {
                 // Regular Android: Try Intent URL directly
-                whatsappBtn.href = whatsappIntent;
+                targetUrl = whatsappIntent;
                 console.log('Android detected - using Intent URL');
             } else {
                 // iOS/Desktop: Use standard wa.me URL
-                whatsappBtn.href = whatsappUrl;
+                targetUrl = whatsappUrl;
                 console.log('iOS/Desktop detected - using wa.me URL');
             }
+
+            // Set href on both button and screenshot link
+            whatsappBtn.href = targetUrl;
+            screenshotLink.href = targetUrl;
 
             console.log('Page loaded. User Agent:', navigator.userAgent);
             console.log('LinkedIn Browser:', isLinkedIn);
