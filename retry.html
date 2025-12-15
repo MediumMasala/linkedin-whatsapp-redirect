@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Almost there - Tal on WhatsApp</title>
+    <title>One Quick Step - Tal on WhatsApp</title>
     <meta name="description" content="One more step to chat with Tal on WhatsApp">
     <meta name="theme-color" content="#ff6b35">
 
@@ -16,22 +16,38 @@
 </head>
 <body>
     <div class="card">
-        <div class="logo">
-            <img src="Tal 2.png" alt="Tal logo">
+        <!-- Progress indicator -->
+        <div class="progress-dots" id="progressDots">
+            <span class="dot" id="dot1"></span>
+            <span class="dot active" id="dot2"></span>
         </div>
+        <div class="step-label" id="stepLabel">Step 2 of 2</div>
 
-        <!-- Initial State -->
-        <h1 id="initialHeading">Almost there.</h1>
+        <!-- Initial State Heading -->
+        <h1 id="initialHeading">LinkedIn is worse on Android.</h1>
+        <!-- Final State Heading (hidden initially) -->
         <h1 id="finalHeading" class="hidden">One more tap.</h1>
 
         <div class="company-pill" id="companyPill"></div>
 
-        <!-- Initial State -->
+        <!-- Instruction image - rename this to match your actual file -->
+        <div class="retry-image-wrapper" id="retryImageWrapper">
+            <img
+                src="./retry-instruction.png"
+                alt="Tap Retry in the popup"
+                class="retry-image"
+                id="retryImage"
+            >
+            <!-- Fallback text if image doesn't load -->
+            <noscript>Look for the "Retry" button in the popup</noscript>
+        </div>
+
+        <!-- Initial State Subtext -->
         <p class="subtext" id="initialSubtext">
-            Tap Retry once. You're one step closer to your dreams.
+            Tap <strong>Retry</strong> once. You're one step closer to your dreams.
         </p>
 
-        <!-- Final State (hidden initially) -->
+        <!-- Final State Subtext (hidden initially) -->
         <p class="subtext hidden" id="finalSubtext">
             If WhatsApp didn't open, tap below.
         </p>
@@ -61,5 +77,24 @@
     </div>
 
     <script src="app.js"></script>
+    <script>
+        // =============================================
+        // UI-ONLY: Configure retry instruction image
+        // Rename this to match your actual image file
+        // =============================================
+        const RETRY_IMAGE_SRC = "./retry-instruction.png"; // <-- rename to match your file
+
+        (function() {
+            var img = document.getElementById('retryImage');
+            if (img) {
+                img.src = RETRY_IMAGE_SRC;
+                img.onerror = function() {
+                    // Hide image wrapper if image fails to load
+                    var wrapper = document.getElementById('retryImageWrapper');
+                    if (wrapper) wrapper.style.display = 'none';
+                };
+            }
+        })();
+    </script>
 </body>
 </html>
