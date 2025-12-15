@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Almost there - Tal on WhatsApp</title>
+    <meta name="description" content="One more step to chat with Tal on WhatsApp">
+    <meta name="theme-color" content="#ff6b35">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Chat with Tal">
+    <meta property="og:description" content="Your personal career agent on WhatsApp">
+    <meta property="og:type" content="website">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="card">
+        <div class="logo">
+            <img src="Tal 2.png" alt="Tal logo">
+        </div>
+
+        <!-- Initial State -->
+        <h1 id="initialHeading">Almost there.</h1>
+        <h1 id="finalHeading" class="hidden">One more tap.</h1>
+
+        <div class="company-pill" id="companyPill"></div>
+
+        <!-- Initial State -->
+        <p class="subtext" id="initialSubtext">
+            Tap Retry once. You're one step closer to your dreams.
+        </p>
+
+        <!-- Final State (hidden initially) -->
+        <p class="subtext hidden" id="finalSubtext">
+            If WhatsApp didn't open, tap below.
+        </p>
+
+        <button
+            type="button"
+            class="btn-primary"
+            id="retryBtn"
+            aria-label="Retry opening WhatsApp"
+        >
+            <span id="retryBtnText">Retry</span>
+        </button>
+
+        <!-- Fallback link (hidden initially) -->
+        <a
+            href="#"
+            class="link-secondary hidden"
+            id="fallbackLink"
+            aria-label="Open WhatsApp in browser as fallback"
+        >
+            Open in browser (fallback)
+        </a>
+
+        <div class="debug-footer">
+            Having trouble? Try opening in Chrome.
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
