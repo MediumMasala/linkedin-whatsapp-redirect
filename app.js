@@ -47,25 +47,16 @@ function buildWaUrl(phone, text) {
 }
 
 // ============================================
-// OPEN WHATSAPP (tries multiple methods)
+// OPEN WHATSAPP (single unified flow for all devices)
 // ============================================
 function openWhatsApp() {
     const params = getParams();
     const phone = params.phone;
     const text = params.text;
 
-    // Detect Android
-    const isAndroid = /android/i.test(navigator.userAgent);
-
-    if (isAndroid) {
-        // Try Android Intent first (most reliable for in-app browsers)
-        const intentUrl = buildIntentUrl(phone, text);
-        window.location.href = intentUrl;
-    } else {
-        // iOS / Desktop: use wa.me
-        const waUrl = buildWaUrl(phone, text);
-        window.location.href = waUrl;
-    }
+    // Single flow: use wa.me for all devices (Android, iOS, Desktop)
+    const waUrl = buildWaUrl(phone, text);
+    window.location.href = waUrl;
 }
 
 // Fallback function that uses wa.me directly
@@ -122,7 +113,7 @@ function showCompanyPill() {
 // ============================================
 function handleIndexButton() {
     openWhatsApp();
-    navigateToRetryIfVisible();
+    // Single screen flow - no redirect to retry page
 }
 
 // ============================================
