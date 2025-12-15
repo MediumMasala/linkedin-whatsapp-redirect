@@ -5,9 +5,9 @@
    ============================================ */
 :root {
     --retry-x: 50%;      /* horizontal center of highlight */
-    --retry-y: 75%;      /* vertical position (from top) */
-    --retry-w: 80px;     /* width of highlight area */
-    --retry-h: 40px;     /* height of highlight area */
+    --retry-y: 82%;      /* vertical position (from top) - adjusted for cropped image */
+    --retry-w: 90px;     /* width of highlight area */
+    --retry-h: 44px;     /* height of highlight area */
 }
 
 /* Reset & Base */
