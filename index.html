@@ -25,9 +25,27 @@
 
         <div class="company-pill" id="companyPill"></div>
 
-        <p class="subtext">
-            Tap below, then tap <strong>Retry</strong> once. You're one step closer to your dreams.
-        </p>
+        <p class="instruction">When this pops up, tap <strong>Retry</strong>.</p>
+
+        <!-- Screenshot with animated overlays -->
+        <div class="screenshot-container">
+            <img src="Screenshot.jpeg" alt="Tap Retry when you see this popup" class="screenshot-img">
+
+            <!-- Scan line animation -->
+            <div class="scan-line"></div>
+
+            <!-- Pulsing highlight around Retry button area -->
+            <div class="retry-highlight"></div>
+
+            <!-- Animated cursor/hand -->
+            <div class="tap-cursor">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+                    <path d="M13.75 2.5a1.25 1.25 0 0 0-2.5 0v8.25H9.75a1.25 1.25 0 0 0 0 2.5h1.5v1h-1.5a1.25 1.25 0 0 0 0 2.5h1.5v2.5a1.25 1.25 0 0 0 2.5 0v-2.5h1.5a1.25 1.25 0 0 0 0-2.5h-1.5v-1h1.5a1.25 1.25 0 0 0 0-2.5h-1.5V2.5z"/>
+                </svg>
+            </div>
+        </div>
+
+        <p class="motivation">You're one step closer to your dreams.</p>
 
         <button
             type="button"
@@ -37,7 +55,6 @@
         >
             Open WhatsApp
         </button>
-
     </div>
 
     <script src="app.js"></script>

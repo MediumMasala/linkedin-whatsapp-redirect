@@ -1,3 +1,15 @@
+/* ============================================
+   CONFIGURATION - Retry highlight position
+   Adjust these values to match the Retry button
+   position on your screenshot (percent-based)
+   ============================================ */
+:root {
+    --retry-x: 50%;      /* horizontal center of highlight */
+    --retry-y: 75%;      /* vertical position (from top) */
+    --retry-w: 80px;     /* width of highlight area */
+    --retry-h: 40px;     /* height of highlight area */
+}
+
 /* Reset & Base */
 * {
     margin: 0;
@@ -26,7 +38,7 @@ body {
 .card {
     background: #ffffff;
     border-radius: 24px;
-    padding: 48px 32px;
+    padding: 32px 24px;
     max-width: 400px;
     width: 100%;
     text-align: center;
@@ -35,9 +47,9 @@ body {
 
 /* Logo */
 .logo {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 24px;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
     border-radius: 50%;
     overflow: hidden;
 }
@@ -50,18 +62,33 @@ body {
 
 /* Typography */
 h1 {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 700;
     color: #1a1a1a;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     letter-spacing: -0.5px;
 }
 
-.subtext {
-    font-size: 16px;
-    color: #666666;
-    margin-bottom: 32px;
-    line-height: 1.6;
+.instruction {
+    font-size: 15px;
+    color: #555555;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.instruction strong {
+    color: #1a1a1a;
+    background: #fff3cd;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.motivation {
+    font-size: 14px;
+    color: #888888;
+    margin-top: 16px;
+    margin-bottom: 20px;
+    font-style: italic;
 }
 
 /* Company Pill */
@@ -73,7 +100,7 @@ h1 {
     font-weight: 600;
     padding: 6px 14px;
     border-radius: 20px;
-    margin: -8px auto 20px;
+    margin: 0 auto 12px;
     width: fit-content;
 }
 
@@ -81,7 +108,159 @@ h1 {
     display: block;
 }
 
-/* Primary Button */
+/* ============================================
+   SCREENSHOT CONTAINER WITH OVERLAYS
+   ============================================ */
+.screenshot-container {
+    position: relative;
+    margin: 0 auto;
+    max-width: 280px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 3px solid #e0e0e0;
+}
+
+.screenshot-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Scan Line Animation */
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(37, 211, 102, 0.8) 50%,
+        transparent 100%
+    );
+    box-shadow: 0 0 10px rgba(37, 211, 102, 0.6);
+    animation: scan 2.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes scan {
+    0% {
+        top: 0;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
+}
+
+/* Retry Button Highlight - Pulsing Ring */
+.retry-highlight {
+    position: absolute;
+    left: var(--retry-x);
+    top: var(--retry-y);
+    width: var(--retry-w);
+    height: var(--retry-h);
+    transform: translate(-50%, -50%);
+    border: 3px solid #25D366;
+    border-radius: 8px;
+    animation: pulse-ring 1.5s ease-out infinite;
+    pointer-events: none;
+}
+
+.retry-highlight::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 2px solid rgba(37, 211, 102, 0.4);
+    border-radius: 12px;
+    animation: pulse-ring-outer 1.5s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse-ring-outer {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+}
+
+/* Animated Tap Cursor */
+.tap-cursor {
+    position: absolute;
+    left: calc(var(--retry-x) + 30px);
+    top: calc(var(--retry-y) + 20px);
+    width: 32px;
+    height: 32px;
+    color: #ffffff;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+    animation: tap-motion 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.tap-cursor svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes tap-motion {
+    0% {
+        transform: translate(20px, 20px) scale(1);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    40% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(0, 0) scale(0.85);
+    }
+    60% {
+        transform: translate(0, 0) scale(1);
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(20px, 20px) scale(1);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   PRIMARY BUTTON
+   ============================================ */
 .btn-primary {
     display: block;
     width: 100%;
@@ -89,9 +268,9 @@ h1 {
     color: #ffffff;
     font-size: 18px;
     font-weight: 600;
-    padding: 18px 24px;
+    padding: 16px 24px;
     border: none;
-    border-radius: 16px;
+    border-radius: 14px;
     cursor: pointer;
     text-decoration: none;
     transition: background 0.2s ease, transform 0.1s ease;
@@ -133,7 +312,7 @@ h1 {
     display: none !important;
 }
 
-/* Progress Dots */
+/* Progress Dots (kept for retry.html) */
 .progress-dots {
     display: flex;
     justify-content: center;
@@ -161,7 +340,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Retry Instruction Image */
+/* Retry Instruction Image (kept for retry.html) */
 .retry-image-wrapper {
     margin: 20px auto 24px;
     max-width: 280px;
@@ -174,39 +353,51 @@ h1 {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Debug footer */
-.debug-footer {
-    margin-top: 32px;
-    font-size: 12px;
-    color: #aaaaaa;
+/* Subtext (kept for retry.html) */
+.subtext {
+    font-size: 16px;
+    color: #666666;
+    margin-bottom: 24px;
+    line-height: 1.6;
 }
 
-.debug-footer a {
-    color: #999999;
-    text-decoration: underline;
-}
-
-/* Responsive */
+/* ============================================
+   RESPONSIVE
+   ============================================ */
 @media (max-width: 480px) {
     body {
         padding: 16px;
     }
 
     .card {
-        padding: 40px 24px;
+        padding: 28px 20px;
         border-radius: 20px;
     }
 
-    h1 {
-        font-size: 24px;
+    .logo {
+        width: 56px;
+        height: 56px;
     }
 
-    .subtext {
-        font-size: 15px;
+    h1 {
+        font-size: 20px;
+    }
+
+    .instruction {
+        font-size: 14px;
+    }
+
+    .screenshot-container {
+        max-width: 260px;
     }
 
     .btn-primary {
         font-size: 17px;
-        padding: 16px 20px;
+        padding: 14px 20px;
+    }
+
+    .tap-cursor {
+        width: 28px;
+        height: 28px;
     }
 }
