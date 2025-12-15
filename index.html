@@ -389,6 +389,11 @@
             const isAndroidDevice = isAndroid();
             const whatsappBtn = document.getElementById('whatsappBtn');
 
+            trackEvent('page_load', 'linkedin_redirect_page');
+            console.log('Page loaded. User Agent:', navigator.userAgent);
+            console.log('LinkedIn Browser:', isLinkedIn);
+            console.log('Android:', isAndroidDevice);
+
             // CRITICAL: For LinkedIn on Android, use TWO-PAGE flow
             // open.html = technical approach with iframe priming
             // open2.html = UX approach explaining the 2-tap flow
@@ -402,15 +407,11 @@
                 whatsappBtn.href = whatsappIntent;
                 console.log('Android detected - using Intent URL');
             } else {
-                // iOS/Desktop: Use standard wa.me URL
-                whatsappBtn.href = whatsappUrl;
-                console.log('iOS/Desktop detected - using wa.me URL');
+                // iOS/Desktop: Auto-redirect to WhatsApp immediately
+                console.log('iOS/Desktop detected - auto-redirecting to WhatsApp');
+                window.location.href = whatsappUrl;
+                return; // Exit early, no need to show the page
             }
-
-            trackEvent('page_load', 'linkedin_redirect_page');
-            console.log('Page loaded. User Agent:', navigator.userAgent);
-            console.log('LinkedIn Browser:', isLinkedIn);
-            console.log('Android:', isAndroidDevice);
         });
 
         // Button click handler - just for analytics and UI
