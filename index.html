@@ -61,6 +61,7 @@
         // Configuration
         const WHATSAPP_NUMBER = '919224262682';
         const WHATSAPP_MESSAGE = 'Hi I want to know more about grapevine';
+        const INTENT_TIMEOUT = 1500; // ms to wait before falling back
 
         // Build WhatsApp URLs
         const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
@@ -78,31 +79,75 @@
             return /android/i.test(navigator.userAgent);
         }
 
-        // Set the href dynamically on page load based on device/browser
+        // Track if intent succeeded
+        let intentSucceeded = false;
+        let fallbackTimer = null;
+
+        // Listen for visibility change (app switch = intent worked)
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                intentSucceeded = true;
+                if (fallbackTimer) {
+                    clearTimeout(fallbackTimer);
+                    fallbackTimer = null;
+                }
+                console.log('Page hidden - intent likely succeeded');
+            }
+        });
+
+        // Async intent loader with fallback
+        function openWhatsAppAsync(e) {
+            e.preventDefault();
+
+            const isAndroidDevice = isAndroid();
+
+            if (isAndroidDevice) {
+                console.log('Trying intent URL first...');
+                intentSucceeded = false;
+
+                // Create hidden iframe to try intent without navigating away
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = whatsappIntent;
+                document.body.appendChild(iframe);
+
+                // Also try direct navigation
+                window.location.href = whatsappIntent;
+
+                // Set fallback timer
+                fallbackTimer = setTimeout(function() {
+                    if (!intentSucceeded && document.visibilityState === 'visible') {
+                        console.log('Intent timeout - falling back to wa.me');
+                        window.location.href = whatsappUrl;
+                    }
+                    // Clean up iframe
+                    if (iframe.parentNode) {
+                        iframe.parentNode.removeChild(iframe);
+                    }
+                }, INTENT_TIMEOUT);
+
+            } else {
+                // iOS/Desktop: Use standard wa.me URL directly
+                console.log('Non-Android - using wa.me directly');
+                window.location.href = whatsappUrl;
+            }
+        }
+
+        // Set up click handlers on page load
         window.addEventListener('load', function() {
             const isLinkedIn = isLinkedInBrowser();
             const isAndroidDevice = isAndroid();
             const whatsappBtn = document.getElementById('whatsappBtn');
             const screenshotLink = document.getElementById('screenshotLink');
 
-            var targetUrl;
-            if (isLinkedIn && isAndroidDevice) {
-                // LinkedIn Android: Use Intent URL
-                targetUrl = whatsappIntent;
-                console.log('LinkedIn Android detected - using Intent URL');
-            } else if (isAndroidDevice) {
-                // Regular Android: Try Intent URL directly
-                targetUrl = whatsappIntent;
-                console.log('Android detected - using Intent URL');
-            } else {
-                // iOS/Desktop: Use standard wa.me URL
-                targetUrl = whatsappUrl;
-                console.log('iOS/Desktop detected - using wa.me URL');
-            }
+            // Use click handlers for async logic
+            whatsappBtn.addEventListener('click', openWhatsAppAsync);
+            screenshotLink.addEventListener('click', openWhatsAppAsync);
 
-            // Set href on both button and screenshot link
-            whatsappBtn.href = targetUrl;
-            screenshotLink.href = targetUrl;
+            // Set href as fallback for middle-click/right-click
+            var fallbackUrl = isAndroidDevice ? whatsappIntent : whatsappUrl;
+            whatsappBtn.href = fallbackUrl;
+            screenshotLink.href = fallbackUrl;
 
             console.log('Page loaded. User Agent:', navigator.userAgent);
             console.log('LinkedIn Browser:', isLinkedIn);
