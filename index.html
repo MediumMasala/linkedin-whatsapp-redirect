@@ -62,6 +62,29 @@
         const WHATSAPP_NUMBER = '919606047104';
         const WHATSAPP_MESSAGE = 'Hi Tal, count me in!';
         const INTENT_TIMEOUT = 1500; // ms to wait before falling back
+        const ANALYTICS_URL = 'https://script.google.com/macros/s/AKfycbyF7j_JBJiv6j60xhi_sewpDaqRHbUZEfWXwBT5V3oCOMvSbxouQMo_MYiYgs5QIwPKtw/exec';
+
+        // Analytics tracking
+        function trackEvent(event) {
+            try {
+                fetch(ANALYTICS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        event: event,
+                        userAgent: navigator.userAgent,
+                        referrer: document.referrer || 'direct',
+                        screenSize: window.innerWidth + 'x' + window.innerHeight
+                    })
+                });
+            } catch (e) {
+                console.log('Analytics error:', e);
+            }
+        }
+
+        // Track page view on load
+        trackEvent('page_view');
 
         // Build WhatsApp URLs
         const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
@@ -98,6 +121,9 @@
         // Async intent loader with fallback
         function openWhatsAppAsync(e) {
             e.preventDefault();
+
+            // Track click event
+            trackEvent('whatsapp_click');
 
             const isAndroidDevice = isAndroid();
 
